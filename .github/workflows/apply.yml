@@ -1,0 +1,85 @@
+name: Build, Deploy with Terraform.
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - 'app/**'
+      - 'Dockerfile'
+  workflow_dispatch:
+
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          registry: docker.io
+          image: danielmagevski/app
+          push: true
+          tags: danielmagevski/projeto-ecs:latest
+
+  plan-with-terraform:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: '1.0.0'
+
+      - name: Terraform format
+        run: terraform fmt -check
+        working-directory: terraform/
+
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_BUCKET_NAME }}" -backend-config="key=${{ secrets.AWS_BUCKET_FILE }}"
+        working-directory: terraform/
+       
+      - name: Terraform validate
+        run: terraform validate -no-color
+        working-directory: terraform/
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: terraform/
+    
+  apply-with-terraform:
+    runs-on: ubuntu-latest
+    needs: plan-with-terraform
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: '1.0.0'
+
+      - name: Terraform init
+        run: terraform init -backend-config="bucket=${{ secrets.TF_BUCKET_NAME }}" -backend-config="key=${{ secrets.AWS_BUCKET_FILE }}"
+        working-directory: terraform/
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -auto-approve
+        working-directory: terraform/
