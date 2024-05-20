@@ -33,7 +33,8 @@ Criar uma solucação em ECS para rodar um container com uma aplicação web com
 + [Terraform](https://www.terraform.io)
 + [GitHub](https://github.com)
     + [GitHub Actions](https://github.com/features/actions)
-
++ [Docker](https://docker.com/)
+    + [DockerHub](https://hub.docker.com/)
 ## Instruções para executar
 
 A pipeline de criação ou atualização do projeto é executada sempre que o código Terraform ou da Aplicação do projeto for alterado na branch main.

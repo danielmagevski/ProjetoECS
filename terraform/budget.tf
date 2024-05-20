@@ -10,6 +10,6 @@ resource "aws_budgets_budget" "budget" {
     notification_type          = "ACTUAL"
     threshold                  = 80
     threshold_type             = "PERCENTAGE"
-    subscriber_email_addresses = ["daniel_magevski@hotmail.com"]
+    subscriber_email_addresses = ["teste@teste.com"]
   }
 }
