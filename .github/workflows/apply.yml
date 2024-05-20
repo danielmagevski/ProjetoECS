@@ -56,26 +56,43 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Check for changes in Terraform directory
+        id: check_tf_changes
+        run: |
+          echo "Checking for changes in the Terraform directory..."
+          if git diff --name-only ${{ github.event.before }} ${{ github.event.after }} | grep -E '^terraform/'
+          then
+            echo "::set-output name=tf_changes_detected::true"
+          else
+            echo "::set-output name=tf_changes_detected::false"
+          fi
+
       - name: Setup Terraform
+        if: steps.check_tf_changes.outputs.tf_changes_detected == 'true'
         uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: '1.0.0'
 
       - name: Terraform format
+        if: steps.check_tf_changes.outputs.tf_changes_detected == 'true'
         run: terraform fmt -check
         working-directory: terraform/
 
       - name: Terraform init
+        if: steps.check_tf_changes.outputs.tf_changes_detected == 'true'
         run: terraform init -backend-config="bucket=${{ secrets.TF_BUCKET_NAME }}" -backend-config="key=${{ secrets.AWS_BUCKET_FILE }}"
         working-directory: terraform/
-       
+
       - name: Terraform validate
+        if: steps.check_tf_changes.outputs.tf_changes_detected == 'true'
         run: terraform validate -no-color
         working-directory: terraform/
 
       - name: Terraform Plan
+        if: steps.check_tf_changes.outputs.tf_changes_detected == 'true'
         run: terraform plan
         working-directory: terraform/
+
     
   apply-with-terraform:
     runs-on: ubuntu-latest
