@@ -42,17 +42,23 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        
+        id: docker_build
         uses: docker/build-push-action@v5
         with:
           registry: docker.io
           image: danielmagevski/app
           push: true
           tags: danielmagevski/projeto-ecs:latest
-      - name: Sign container image
+          outputs: type=docker,format=json
+
+      - name: Extract digest
+        run: echo "DIGEST=$(echo ${{ steps.docker_build.outputs.result }} | jq -r '.digest')" >> $GITHUB_ENV
+
+
+      - name: Sign container image with digest
         
         run: |
-          cosign sign --key env://COSIGN_KEY docker.io/danielmagevski/app:latest
+         cosign sign --key env://COSIGN_KEY docker.io/danielmagevski/app@$DIGEST
         env:
           COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }} 
