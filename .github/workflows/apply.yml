@@ -13,7 +13,7 @@ on:
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  EVENT_TYPE: ${{ github.event_name }}
+  #EVENT_TYPE: ${{ github.event_name }}
 
 jobs:
   build-and-push:
@@ -23,7 +23,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Set up cosign
         uses: sigstore/cosign-installer@main
-      # - name: Check for changes in Dockerfile or app
+      
+        # - name: Check for changes in Dockerfile or app
       #   if: env.EVENT_TYPE == 'push' 
       #   id: check_changes
       #   run: |
@@ -35,13 +36,13 @@ jobs:
       #       echo "::set-output name=changes_detected::false"
       #     fi
       - name: Login to Docker Hub
-        if: steps.check_changes.outputs.changes_detected == 'true'
+        
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build and push
-        if: steps.check_changes.outputs.changes_detected == 'true'
+        
         uses: docker/build-push-action@v5
         with:
           registry: docker.io
@@ -49,7 +50,7 @@ jobs:
           push: true
           tags: danielmagevski/projeto-ecs:latest
       - name: Sign container image
-        if: steps.check_changes.outputs.changes_detected == 'true'
+        
         run: |
           cosign sign --key env://COSIGN_KEY docker.io/danielmagevski/app:latest
         env:
@@ -63,7 +64,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Check for changes in Terraform directory
-        if: env.EVENT_TYPE == 'push' # Checa se o evento é um 'push'
+        if: env.EVENT_TYPE == 'push'
         id: check_tf_changes
         run: |
           echo "Checking for changes in the Terraform directory..."
