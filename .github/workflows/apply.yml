@@ -20,7 +20,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
+      # Install cosign
+      - name: Set up cosign
+        uses: sigstore/cosign-installer@main
+      # Build and push the image
       - name: Check for changes in Dockerfile or app
         id: check_changes
         run: |
@@ -48,6 +51,13 @@ jobs:
           push: true
           tags: danielmagevski/projeto-ecs:latest
 
+      - name: sign container image
+        run: |
+          cosign sign --key env://COSIGN_KEY docker.io/danielmagevski/app:latest
+        shell: bash
+        env:
+          COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }} 
 
   plan-with-terraform:
     runs-on: ubuntu-latest
