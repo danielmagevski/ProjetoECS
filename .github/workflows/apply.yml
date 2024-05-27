@@ -39,8 +39,10 @@ jobs:
         
         uses: docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v5
@@ -48,17 +50,22 @@ jobs:
           registry: docker.io
           image: danielmagevski/app
           push: true
-          tags: danielmagevski/projeto-ecs:latest
-          outputs: type=docker,format=json
-
-      - name: Extract digest
-        run: echo "DIGEST=$(echo ${{ steps.docker_build.outputs.result }} | jq -r '.digest')" >> $GITHUB_ENV
+          builder: ${{ steps.buildx.outputs.name }}
+          tags: |
+            ghcr.io/avisi-cloud/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+          labels: |
+           org.opencontainers.image.title=${{ github.event.repository.name }}
+           org.opencontainers.image.description=${{ github.event.repository.description }} 
+           org.opencontainers.image.source=${{ github.event.repository.html_url }}
+           org.opencontainers.image.revision=${{ github.sha }}
+           org.opencontainers.image.version=${{ env.VERSION }}
 
 
       - name: Sign container image with digest
         
         run: |
-         cosign sign --key env://COSIGN_KEY docker.io/danielmagevski/app@$DIGEST
+          cosign sign --key env://COSIGN_KEY ghcr.io/avisi-cloud/${{ env.IMAGE_NAME }}
+        shell: bash
         env:
           COSIGN_KEY: ${{ secrets.COSIGN_KEY }}
           COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }} 
