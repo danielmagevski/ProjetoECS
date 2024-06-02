@@ -61,8 +61,15 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
-  
 
+      - name: Sign the container image
+        run: |
+          cosign sign --key env://COSIGN_PRIVATE_KEY --yes danielmagevski/conversao-temperatura:v${{ github.run_number }}
+        shell: bash
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{secrets.COSIGN_PASSWORD}}
+  
 
   plan-with-terraform:
     runs-on: ubuntu-latest
