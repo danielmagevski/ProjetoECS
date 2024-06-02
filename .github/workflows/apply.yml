@@ -48,6 +48,21 @@ jobs:
           push: true
           tags: danielmagevski/projeto-ecs:latest
 
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.16.1
+        with:
+          image-ref: danielmagevski/projeto-ecs:v${{ github.run_number }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          exit-code: 0
+          severity: CRITICAL,HIGH
+        
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+  
+
 
   plan-with-terraform:
     runs-on: ubuntu-latest
