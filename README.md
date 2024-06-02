@@ -18,6 +18,8 @@ Criar uma solucação em ECS para rodar um container com uma aplicação web com
 - Certificado validado e assinado para prover criptografia e cumprir os requisitos de segurança
 - Um dashboard básico do CloudWatch para monitorar memória e CPU
 - Um budget mensal para monitorar o custo com alerta de e-mail caso consuma 80% do que foi definido
+- Scan de segurança da imagem docker com o Trivy
+- Assinatura da Imagem com o Cosing
 
 
 
@@ -35,6 +37,9 @@ Criar uma solucação em ECS para rodar um container com uma aplicação web com
     + [GitHub Actions](https://github.com/features/actions)
 + [Docker](https://docker.com/)
     + [DockerHub](https://hub.docker.com/)
++ [Trivy](https://trivy.dev/)
++ [Cosign](https://docs.sigstore.dev/signing/quickstart/)
+
 ## Instruções para executar
 
 A pipeline de criação ou atualização do projeto é executada sempre que o código Terraform ou da Aplicação do projeto for alterado na branch main.
