@@ -46,8 +46,10 @@ jobs:
           registry: docker.io
           image: danielmagevski/app
           push: true
-          tags: danielmagevski/projeto-ecs:latest
-
+          tags: |
+            danielmagevski/conversao-temperatura:v${{ github.run_number }} 
+            danielmagevski/projeto-ecs:latest
+            
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.16.1
         with:
