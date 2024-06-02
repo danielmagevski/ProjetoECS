@@ -1,7 +1,7 @@
 name: Build, Deploy with Terraform.
 
 on:
-  push:
+  #push:
     # branches:
     #   - main
     # paths:
