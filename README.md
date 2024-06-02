@@ -60,6 +60,10 @@ DOCKERHUB_USERNAME => Nome do usuário no Docker Hub.
 
 DOCKERHUB_TOKEN => Token utilizado no Docker Hub.
 
+COSIGN_PRIVATE_KEY => Chave privada do Cosign para assinatura.
+
+COSIGN_PASSWORD => Password da chave privada
+
 ## Estrutura da solução
 
 ![Estrutura da solução ](./diagrama/estrutura.drawio.png)
