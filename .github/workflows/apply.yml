@@ -47,7 +47,7 @@ jobs:
           image: danielmagevski/app
           push: true
           tags: |
-            danielmagevski/conversao-temperatura:v${{ github.run_number }} 
+            danielmagevski/projeto-ecs:v${{ github.run_number }} 
             danielmagevski/projeto-ecs:latest
             
       - name: Run Trivy vulnerability scanner
