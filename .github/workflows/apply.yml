@@ -17,6 +17,13 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      security-events: write
+      actions: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.2
@@ -69,7 +76,7 @@ jobs:
 
       - name: Sign the container image
         run: |
-          cosign sign --key env://COSIGN_PRIVATE_KEY --yes danielmagevski/conversao-temperatura:v${{ github.run_number }}
+          cosign sign --key env://COSIGN_PRIVATE_KEY --yes danielmagevski/projeto-ecs:v${{ github.run_number }}
         shell: bash
         env:
           COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
