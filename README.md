@@ -42,8 +42,7 @@ Criar uma solucação em ECS para rodar um container com uma aplicação web com
 
 ## Instruções para executar
 
-A pipeline de criação ou atualização do projeto é executada sempre que o código Terraform ou da Aplicação do projeto for alterado na branch main.
-
+A pipeline para criação do projeto com a imagem docker, um cluster ECS e uma task provisionado com terraform.
 
 ## Configurações 
 
