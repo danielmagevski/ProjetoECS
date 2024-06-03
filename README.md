@@ -72,3 +72,9 @@ COSIGN_PASSWORD => Password da chave privada
 
 ![Fluxo da solução](./diagrama/fluxo.drawio.png)
 
+## Possíveis evoluções do projeto
+
+Algumas evoluções que sugiro para o projeto:
+
++ Separar ambientes dev, homolog e prod utilizando o Terraform Workspace ou Terraform Grunt para criação e gerenciamento desses ambientes.
+
