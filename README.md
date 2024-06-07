@@ -74,7 +74,5 @@ COSIGN_PASSWORD => Password da chave privada
 
 ## Possíveis evoluções do projeto
 
-Algumas evoluções que sugiro para o projeto:
-
 + Separar ambientes dev, homolog e prod utilizando o Terraform Workspace ou Terraform Grunt para criação e gerenciamento desses ambientes.
 
